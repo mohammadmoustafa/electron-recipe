@@ -1,0 +1,15 @@
+#body {
+  height: 100%;
+}
+
+#body, #navigation, #content, #crumbs {
+  border: 1px solid black;
+}
+
+#crumbs * {
+  margin-bottom: auto;
+}
+
+#crumbs-root {
+  width: 100%;
+}
