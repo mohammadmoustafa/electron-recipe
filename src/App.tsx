@@ -1,10 +1,11 @@
 import React from 'react';
 import Recipes from './components/Recipes';
+import AddRecipeForm from './components/AddRecipeForm';
 import './App.css';
 import './style/master.css';
 
 // Shards React UI
-import { 
+import {
   Container,
   Row,
   Col,
@@ -12,8 +13,6 @@ import {
   BreadcrumbItem,
   ListGroup,
   ListGroupItem,
-  Button,
-  ButtonGroup
 } from "shards-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shards-ui/dist/css/shards.min.css";
@@ -30,9 +29,14 @@ function App() {
               <Route exact path="/">
                 <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
               </Route>
-              <Route path="/recipes">
+              <Route exact path="/recipes">
                 <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
                 <BreadcrumbItem active>Recipes</BreadcrumbItem>
+              </Route>
+              <Route exact path="/recipes/add-recipe">
+                <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
+                <BreadcrumbItem>Recipes</BreadcrumbItem>
+                <BreadcrumbItem active>Add Recipe</BreadcrumbItem>
               </Route>
             </Switch>
           </Breadcrumb>
@@ -44,7 +48,7 @@ function App() {
                 <Route>
                   <ListGroup flush>
                     <ListGroupItem><Link to="/recipes">Recipes</Link></ListGroupItem>
-                    <ListGroupItem>Item 2</ListGroupItem>
+                    <ListGroupItem><Link to="/recipes/add-recipe">Add Recipe</Link></ListGroupItem>
                     <ListGroupItem>Item 3</ListGroupItem>
                     <ListGroupItem>Item 4</ListGroupItem>
                     <ListGroupItem>Item 5</ListGroupItem>
@@ -58,7 +62,8 @@ function App() {
             <Container fluid>
               <Row>
                 <Switch>
-                  <Route path="/recipes"><Recipes /></Route>
+                  <Route exact path="/recipes"><Recipes /></Route>
+                  <Route exact path="/recipes/add-recipe"><AddRecipeForm /></Route>
                   <Route exact path="/">Content</Route>
                 </Switch>
               </Row>

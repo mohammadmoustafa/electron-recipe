@@ -1,16 +1,25 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain:ipc } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const RecipeStore = require('../src/DataStore');
+global.recipeStore = new RecipeStore();
 
 let mainWindow;
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 900, height: 680 });
+  mainWindow = new BrowserWindow({
+    width: 900,
+    height: 680,
+    webPreferences: {
+      nodeIntegration: true
+    }
+   });
   mainWindow.loadURL(
     isDev ? 'http://localhost:3000' : `file://${path.join(__dirname), "../build/index.html"}`
   );
   mainWindow.on('closed', () => { mainWindow = null });
   mainWindow.webContents.openDevTools();
+  // console.log(app.getPath('userData'));
 }
 
 app.on('ready', createWindow);
