@@ -19,7 +19,7 @@ class AddRecipeForm extends React.Component<any,any> {
     super(props)
     this.state = {
       title: '',
-      id: -1,
+      img: '',
       categories: {
         breakfast: false,
         lunch: false,
@@ -30,7 +30,7 @@ class AddRecipeForm extends React.Component<any,any> {
     this.store = remote.getGlobal('recipeStore');
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleIdChange = this.handleIdChange.bind(this);
+    this.handleImgChange = this.handleImgChange.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
   }
 
@@ -38,8 +38,8 @@ class AddRecipeForm extends React.Component<any,any> {
     this.setState({title: event.target.value});
   }
 
-  handleIdChange(event: any) {
-    this.setState({id: event.target.value});
+  handleImgChange(event: any) {
+    this.setState({img: event.target.value});
   }
   
   handleCheckChange(event: any, category: any) {
@@ -55,8 +55,8 @@ class AddRecipeForm extends React.Component<any,any> {
     for (let x in this.state.categories) {
       if (this.state.categories[x]) categories.push(x);
     }
-    this.store.addRecipe({ title: this.state.title, id: this.state.id, categories: categories});
-    alert("Recipe has been added");
+    this.store.addRecipe({ title: this.state.title, img: this.state.img ,categories: categories});
+    alert("Recipe has been added.");
     this.setState({ redirect: true });
     event.preventDefault();
   }
@@ -69,8 +69,8 @@ class AddRecipeForm extends React.Component<any,any> {
           <FormInput id="#title" placeholder="Recipe Name" onChange={this.handleTitleChange}/>
         </FormGroup>
         <FormGroup>
-          <label htmlFor="#id">Recipe ID</label>
-          <FormInput type="number" id="#id" placeholder="Recipe ID" onChange={this.handleIdChange}/>
+          <label htmlFor="#img">Recipe Image URL</label>
+          <FormInput id="#img" placeholder="Image URL" onChange={this.handleImgChange}/>
         </FormGroup>
         <FormGroup>
           <FormCheckbox

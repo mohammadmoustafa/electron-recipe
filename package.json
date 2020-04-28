@@ -27,6 +27,7 @@
     "react": "^16.13.1",
     "react-desktop": "^0.3.9",
     "react-dom": "^16.13.1",
+    "react-file-picker": "^0.0.6",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "shards-react": "^1.0.3",

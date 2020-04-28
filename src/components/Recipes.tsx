@@ -22,9 +22,9 @@ type catOptions = {
   [key: string]: JSX.Element
 }
 var categories : catOptions = {
-  breakfast: <Badge theme="primary" key="breakfast">Breakfast</Badge>,
-  lunch: <Badge theme="success" key="lunch">Lunch</Badge>,
-  dinner: <Badge theme="info" key="dinner">Dinner</Badge>
+  breakfast: <Badge className="recipe-badge" theme="primary" key="breakfast">Breakfast</Badge>,
+  lunch: <Badge className="recipe-badge" theme="success" key="lunch">Lunch</Badge>,
+  dinner: <Badge className="recipe-badge" theme="info" key="dinner">Dinner</Badge>
 }
 
 class Recipe extends React.Component<RecipeProps> {
@@ -68,7 +68,7 @@ class Recipes extends React.Component<any, any> {
           <Recipe title={r.title}
                   category={r.categories}
                   time="5 mins."
-                  img={breakfast}
+                  img={(r.img) ? r.img : breakfast}
                   key={r.id}
                   id={r.id}/>
         ) }

@@ -1,6 +1,11 @@
 .recipe-img {
   object-fit: cover;
+  max-height: 150px;
   max-width: 250px;
+}
+
+.recipe-badge {
+  margin-right: 5px;
 }
 
 .card-body {
