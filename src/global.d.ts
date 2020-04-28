@@ -1,7 +1,8 @@
 interface RecipeProps {
   title: String,
-  category: Array<String>,
+  category: Array<string>,
   time: String,
+  id: number,
   img?: String,
 }
 

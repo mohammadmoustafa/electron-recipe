@@ -18,16 +18,37 @@ import { faClock } from '@fortawesome/free-regular-svg-icons';
 
 const remote = window.require('electron').remote;
 
+type catOptions = {
+  [key: string]: JSX.Element
+}
+var categories : catOptions = {
+  breakfast: <Badge theme="primary" key="breakfast">Breakfast</Badge>,
+  lunch: <Badge theme="success" key="lunch">Lunch</Badge>,
+  dinner: <Badge theme="info" key="dinner">Dinner</Badge>
+}
+
 class Recipe extends React.Component<RecipeProps> {
+
+  constructor(props: RecipeProps) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    alert(`Recipe name:${this.props.title}, ID: ${this.props.id}`);
+  }
+
   render() {
     return (
-      <Card style={{ maxWidth: '250px', maxHeight: '300px', margin: '5px 10px 5px 10px' }}>
+      <Card onClick={this.handleClick} style={{ maxWidth: '250px', maxHeight: '300px', margin: '5px 10px 5px 10px' }}>
         <CardImg top className="recipe-img" src={(this.props.img) ? this.props.img : "https://place-hold.it/250x300"} />
         <CardBody className="recipe-body">
           <CardTitle>{this.props.title}</CardTitle>
           <CardSubtitle><FontAwesomeIcon icon={faClock} /> {this.props.time}</CardSubtitle>
         </CardBody>
-        <CardFooter><Badge  theme="primary">Breakfast</Badge></CardFooter>
+        <CardFooter>{ this.props.category.map((c: string) => {
+          return categories[c];
+        }) }</CardFooter>
       </Card>
     );
   }
@@ -43,10 +64,14 @@ class Recipes extends React.Component<any, any> {
   render() {
     return (
       <React.Fragment>
-        <Recipe title="Pancakes" category={['breakfast']} time="5 mins." img={breakfast}/>
-        {/* { RecipeStore.recipes.map((r : any) =>
-          <Recipe title={r.title} category={['breakfast']} time="5 mins." img={breakfast} key={r.id}/>
-        ) } */}
+        { this.store.recipes.map((r : any) =>
+          <Recipe title={r.title}
+                  category={r.categories}
+                  time="5 mins."
+                  img={breakfast}
+                  key={r.id}
+                  id={r.id}/>
+        ) }
       </React.Fragment>
     );
   }
