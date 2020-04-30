@@ -1,22 +1,62 @@
 const Store = require('electron-store');
 
 const recipeSchema = {
-  title: {
-    type: 'string',
-    minLength: 1,
-    maxLength: 30
-  },
   id: {
     type: 'integer',
-    default: -1
+    default: 0
   },
-  img: {
-    type: 'string',
-  },
-  categories: {
+  recipes: {
     type: 'array',
     items: {
-      type: 'string'
+      type: 'object',
+      properties: {
+        id: {
+          type: 'integer',
+          default: -1
+        },
+        title: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 30
+        },
+        img: {
+          type: 'string',
+        },
+        categories: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        prepTime: {
+          type: 'integer',
+          minimum: 0
+        },
+        cookTime: {
+          type: 'integer',
+          minimum: 0
+        },
+        ingredients: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              quantity: { type: 'number', minimum: 1 },
+              unit: { type: 'string', enum: ['cup', 'tablespoon', 'teaspoon'] }
+            }
+          }
+        },
+        directions: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        notes: {
+          type: 'string'
+        }
+      }
     }
   }
 }
@@ -43,6 +83,7 @@ class RecipeStore extends Store {
   }
 
   addRecipe(recipe) {
+    console.log(recipe);
     recipe.id = this.id;
     ++this.id;
     this.recipes = [...this.recipes, recipe];
