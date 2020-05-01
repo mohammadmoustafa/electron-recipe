@@ -43,7 +43,7 @@ const recipeSchema = {
             properties: {
               name: { type: 'string' },
               quantity: { type: 'number', minimum: 1 },
-              unit: { type: 'string', enum: ['cup', 'tablespoon', 'teaspoon'] }
+              unit: { type: 'string' }
             }
           }
         },
@@ -80,6 +80,11 @@ class RecipeStore extends Store {
     this.recipes = this.get('recipes') || [];
     this.id = this.get('id') || 0;
     return this;
+  }
+
+  getRecipe(id) {
+    this.getRecipes();
+    return this.recipes.filter(recipe => recipe.id == id);
   }
 
   addRecipe(recipe) {

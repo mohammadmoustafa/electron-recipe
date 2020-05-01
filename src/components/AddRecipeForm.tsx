@@ -7,14 +7,11 @@ import {
   FormGroup,
   FormCheckbox,
   FormTextarea,
+  FormSelect,
   Button,
   InputGroup,
   InputGroupText,
   InputGroupAddon,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  DropdownMenu
 } from "shards-react";
 
 import { Redirect } from 'react-router-dom';
@@ -39,19 +36,61 @@ class AddRecipeForm extends React.Component<any,any> {
       directions: [],
       notes: '',
       redirect: false,
-      open: false
+      open: false,
+      ingredientForm: {
+        name: '',
+        quantity: 0,
+        unit: 'cup'
+      },
+      directionsForm: ''
     }
     this.store = remote.getGlobal('recipeStore');
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCheckChange = this.handleCheckChange.bind(this);
     this.handleDirectionsChange = this.handleDirectionsChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.toggle = this.toggle.bind(this);
+    this.addRow = this.addRow.bind(this);
+    this.addDirection = this.addDirection.bind(this);
+    this.handleIngredientChange = this.handleIngredientChange.bind(this);
+    // this.store.addRecipe({
+    //   title: "bread",
+    //   img: '',
+    //   categories: ['breakfast'],
+    //   prepTime: 1,
+    //   cookTime: 1,
+    //   ingredients: [{
+    //     name: "flour",
+    //     quantity: 3,
+    //     unit: 'tablespoon'
+    //   },
+    //   {
+    //     name: 'water',
+    //     quantity: 3,
+    //     unit: 'tablespoon'
+    //   }],
+    //   directions: ['mix', 'proof', 'bake'],
+    //   notes: 'mixy mixy'
+    // });
+  }
+
+  addRow(event: any) {
+    var ingredients = this.state.ingredients;
+    ingredients.push({
+      name: this.state.ingredientForm.name,
+      quantity: parseInt(this.state.ingredientForm.quantity),
+      unit: this.state.ingredientForm.unit
+    });
+    this.setState({ ingredients: ingredients});
+  }
+
+  addDirection(event: any) {
+    var directions = this.state.directions;
+    directions.push(this.state.directionsForm);
+    this.setState({ directions: directions});
   }
 
   handleDirectionsChange(event: any) {
-    var directions: Array<string> = event.target.value.split(',');
-    this.setState({ directions: directions });
+    this.setState({ directionsForm: event.target.value });
   }
 
   handleChange(event: any, field: string) {
@@ -59,16 +98,19 @@ class AddRecipeForm extends React.Component<any,any> {
     newState[field] = event.target.value;
     this.setState({...this.state, ...newState });
   }
+
+  handleIngredientChange(event: any, field: string) {
+    const newState: any = {};
+    newState['ingredientForm'] = this.state.ingredientForm;
+    newState.ingredientForm[field] = event.target.value;
+    this.setState({...this.state, ...newState});
+  }
   
   handleCheckChange(event: any, category: any) {
     const newState: any = {};
     newState['categories'] = this.state.categories;
     newState.categories[category] = !this.state.categories[category];
     this.setState({...this.state, ...newState});
-  }
-
-  toggle() {
-    this.setState({ open: !this.state.open });
   }
 
   handleSubmit(event: any) {
@@ -82,13 +124,7 @@ class AddRecipeForm extends React.Component<any,any> {
       categories: categories,
       prepTime: parseInt(this.state.prep),
       cookTime: parseInt(this.state.cook),
-      ingredients: [
-        {
-          name: 'test ingredient',
-          quantity: 2,
-          unit: 'cup'
-        }
-      ],
+      ingredients: this.state.ingredients,
       directions: this.state.directions,
       notes: this.state.notes
     }
@@ -137,16 +173,10 @@ class AddRecipeForm extends React.Component<any,any> {
           </InputGroupAddon>
           <FormInput type="number"
             onChange={(e:any) => this.handleChange(e, 'prep')}/>
-          <Dropdown
-            addonType="append"
-            open={this.state.open}
-            toggle={this.toggle}>
-            <DropdownToggle caret>Time Unit</DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem>Minutes</DropdownItem>
-              <DropdownItem>Hours</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <FormSelect>
+            <option>Hour(s)</option>
+            <option>Minute(s)</option>
+          </FormSelect>
         </InputGroup>
 
         <InputGroup>
@@ -155,22 +185,73 @@ class AddRecipeForm extends React.Component<any,any> {
           </InputGroupAddon>
           <FormInput type="number"
             onChange={(e:any) => this.handleChange(e, 'cook')}/>
-          <Dropdown
-            addonType="append"
-            open={this.state.open}
-            toggle={this.toggle}>
-            <DropdownToggle caret>Time Unit</DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem>Minutes</DropdownItem>
-              <DropdownItem>Hours</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <FormSelect>
+            <option>Hour(s)</option>
+            <option>Minute(s)</option>
+          </FormSelect>
         </InputGroup>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Quantity</th>
+              <th>Unit</th>  
+            </tr>
+            <tr>
+              <th><FormInput onChange={(e: any) => this.handleIngredientChange(e, 'name')} /></th>
+              <th><FormInput type="number" onChange={(e: any) => this.handleIngredientChange(e, 'quantity')} /></th>
+              <th>
+                <FormSelect value={this.state.ingredientForm.unit}
+                  onChange={(e: any) => this.handleIngredientChange(e, 'unit')}>
+                  <option value="cup">Cup</option>
+                  <option value="bunch">Bunch</option>
+                </FormSelect>
+              </th>
+              <th><Button onClick={this.addRow}>Add Ingredient</Button></th>
+            </tr>
+          </thead>
+        </table>
+        <table>
+          <tbody>
+            { 
+              this.state.ingredients.map((r: any) => {
+                return (
+                  <tr key={r.name}>
+                    <td>{r.name}</td>
+                    <td>{r.quantity}</td>
+                    <td>{r.unit}</td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </table>
+        
+        <table>
+          <thead>
+            <tr>
+              <th><FormInput onChange={this.handleDirectionsChange} /></th>
+              <th><Button onClick={this.addDirection}>Add Direction</Button></th>
+            </tr>
+          </thead>
+        </table>
+        <table>
+          <tbody>
+            { 
+              this.state.directions.map((r: any, index: number) => {
+                return (
+                  <tr key={index}>
+                    <td>{ ++index }</td>
+                    <td>{r}</td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
+        </table>
+
         <FormGroup>
-          <label htmlFor="#ingredients">Ingredients</label>
-          <FormInput id="#ingredients" type="number" placeholder="Ingredients" />
-          <label htmlFor="#directiones">Directions</label>
-          <FormInput id="#directions" placeholder="Directions" onChange={this.handleDirectionsChange}/>
           <label htmlFor="#notes">Notes</label>
           <FormTextarea id="#notes"
             onChange={(e: any) => this.handleChange(e, 'notes')} />

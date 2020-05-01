@@ -16,6 +16,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
 
+import { Link } from 'react-router-dom';
+
 const remote = window.require('electron').remote;
 
 type catOptions = {
@@ -40,16 +42,18 @@ class Recipe extends React.Component<RecipeProps> {
 
   render() {
     return (
-      <Card onClick={this.handleClick} style={{ maxWidth: '250px', maxHeight: '300px', margin: '5px 10px 5px 10px' }}>
-        <CardImg top className="recipe-img" src={(this.props.img) ? this.props.img : "https://place-hold.it/250x300"} />
-        <CardBody className="recipe-body">
-          <CardTitle>{this.props.title}</CardTitle>
-          <CardSubtitle><FontAwesomeIcon icon={faClock} /> {this.props.time}</CardSubtitle>
-        </CardBody>
-        <CardFooter>{ this.props.category.map((c: string) => {
-          return categories[c];
-        }) }</CardFooter>
-      </Card>
+      <Link to={`/recipes/${this.props.id}`}>
+        <Card style={{ maxWidth: '250px', maxHeight: '300px', margin: '5px 10px 5px 10px' }}>
+          <CardImg top className="recipe-img" src={(this.props.img) ? this.props.img : "https://place-hold.it/250x300"} />
+          <CardBody className="recipe-body">
+            <CardTitle>{this.props.title}</CardTitle>
+            <CardSubtitle><FontAwesomeIcon icon={faClock} /> {this.props.time}</CardSubtitle>
+          </CardBody>
+          <CardFooter>{ this.props.category.map((c: string) => {
+            return categories[c];
+          }) }</CardFooter>
+        </Card>
+      </Link>
     );
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import Recipes from './components/Recipes';
 import AddRecipeForm from './components/AddRecipeForm';
+import RecipePage from './components/RecipePage';
 import './App.css';
 import './style/master.css';
 
@@ -38,6 +39,11 @@ function App() {
                 <BreadcrumbItem>Recipes</BreadcrumbItem>
                 <BreadcrumbItem active>Add Recipe</BreadcrumbItem>
               </Route>
+              <Route exact path="/recipes/:id">
+                <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
+                <BreadcrumbItem>Recipes</BreadcrumbItem>
+                <BreadcrumbItem active>View Recipe</BreadcrumbItem>
+              </Route>
             </Switch>
           </Breadcrumb>
         </Row>
@@ -65,6 +71,7 @@ function App() {
                   <Route exact path="/recipes"><Recipes /></Route>
                   <Route exact path="/recipes/add-recipe"><AddRecipeForm /></Route>
                   <Route exact path="/">Content</Route>
+                  <Route path="/recipes/:id" children={<RecipePage />}></Route>
                 </Switch>
               </Row>
             </Container>
