@@ -31,7 +31,9 @@ class AddRecipeForm extends React.Component<any,any> {
         dinner: false,
       },
       prep: -1,
+      prepUnit: 'hr',
       cook: -1,
+      cookUnit: 'hr',
       ingredients: [],
       directions: [],
       notes: '',
@@ -52,25 +54,6 @@ class AddRecipeForm extends React.Component<any,any> {
     this.addRow = this.addRow.bind(this);
     this.addDirection = this.addDirection.bind(this);
     this.handleIngredientChange = this.handleIngredientChange.bind(this);
-    // this.store.addRecipe({
-    //   title: "bread",
-    //   img: '',
-    //   categories: ['breakfast'],
-    //   prepTime: 1,
-    //   cookTime: 1,
-    //   ingredients: [{
-    //     name: "flour",
-    //     quantity: 3,
-    //     unit: 'tablespoon'
-    //   },
-    //   {
-    //     name: 'water',
-    //     quantity: 3,
-    //     unit: 'tablespoon'
-    //   }],
-    //   directions: ['mix', 'proof', 'bake'],
-    //   notes: 'mixy mixy'
-    // });
   }
 
   addRow(event: any) {
@@ -122,8 +105,8 @@ class AddRecipeForm extends React.Component<any,any> {
       title: this.state.title,
       img: this.state.img,
       categories: categories,
-      prepTime: parseInt(this.state.prep),
-      cookTime: parseInt(this.state.cook),
+      prepTime: parseFloat(this.state.prep) * ((this.state.prepUnit === 'hr') ? 60 : 1),
+      cookTime: parseFloat(this.state.cook) * ((this.state.cookUnit === 'hr') ? 60 : 1),
       ingredients: this.state.ingredients,
       directions: this.state.directions,
       notes: this.state.notes
@@ -171,9 +154,9 @@ class AddRecipeForm extends React.Component<any,any> {
           <InputGroupAddon type="prepend">
             <InputGroupText>Prep Time</InputGroupText>
           </InputGroupAddon>
-          <FormInput type="number"
+          <FormInput type="number" step="0.25"
             onChange={(e:any) => this.handleChange(e, 'prep')}/>
-          <FormSelect>
+          <FormSelect onChange={(e: any) => { this.setState({ cookUnit: e.target.value}) }} >
             <option>Hour(s)</option>
             <option>Minute(s)</option>
           </FormSelect>
@@ -183,11 +166,11 @@ class AddRecipeForm extends React.Component<any,any> {
           <InputGroupAddon type="prepend">
             <InputGroupText>Cook Time</InputGroupText>
           </InputGroupAddon>
-          <FormInput type="number"
+          <FormInput type="number" step="0.25"
             onChange={(e:any) => this.handleChange(e, 'cook')}/>
-          <FormSelect>
-            <option>Hour(s)</option>
-            <option>Minute(s)</option>
+          <FormSelect onChange={(e: any) => { this.setState({ cookUnit: e.target.value}) }} >
+            <option value="hr">Hour(s)</option>
+            <option value="min">Minute(s)</option>
           </FormSelect>
         </InputGroup>
 

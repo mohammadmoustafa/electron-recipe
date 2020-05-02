@@ -1,0 +1,5 @@
+ul.column-2 {
+  columns: 3;
+  padding-left: 0;
+  list-style-type: none; 
+}

@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../style/master.css';
+import '../style/RecipePage.css';
+import * as conversions from './UnitConversions.json';
 import breakfast from '../media/breakfast.jpeg';
 import { useParams } from 'react-router-dom';
 
@@ -7,7 +9,8 @@ import {
     Container,
     Row,
     Col,
-    Badge
+    Badge,
+    FormSelect,
 } from "shards-react";
 
 const remote = window.require('electron').remote;
@@ -24,6 +27,31 @@ export default function RecipePage() {
     const { id } = useParams();
     const store = remote.getGlobal('recipeStore');
     const recipe = store.getRecipe(id)[0];
+    const [divider, setDivider] = useState(1);
+
+    const convertUnit = (num: number, unit: string) => {
+      let divisor : number = divider;
+      let clean = ((num / divisor) % 0.25) === 0;
+      if (clean) return `${num/divisor} ${unit}`;
+      else {
+        switch(unit) {
+          case 'cup':
+            let mult = conversions.cup.multiplier;
+            let tbsp = Math.floor(Math.pow(mult, 2) *num / divisor);
+            let tsp = Math.ceil(((( Math.pow(mult, 2) * num) / divisor) % tbsp) * conversions.tbsp.multiplier);
+            return `${tbsp} tbsp + ${tsp} tsp`;
+          default:
+            return 'cups';
+        }
+      }
+    }
+
+    const convertTime = (mins: number) => {
+      let hr = Math.floor(mins / 60);
+      let min = mins % 60;
+      return `${hr} ` + ((hr > 1)?  `hours` : 'hour') + ((min > 0) ? ` ${min} mins` : '');
+    }
+
     return (
         <Container fluid>
             <Row>
@@ -32,48 +60,65 @@ export default function RecipePage() {
                     src={(recipe.img) ? recipe.img : breakfast} alt=''/>
               </Col>
               <Col>
-                <Row>{recipe.title}</Row>
-                <Row>Prep Time: {recipe.prepTime} Cook Time: {recipe.cookTime}</Row>
+                <Row><h3>{recipe.title}</h3></Row>
+                <Row>Prep Time: {convertTime(recipe.prepTime)} Cook Time: {convertTime(recipe.cookTime)}</Row>
                 <Row>{ recipe.categories.map((c: string) => {
                     return categories[c];
                   }) }
                 </Row>
+                <Row>
+                  <label htmlFor="divider">Divide Recipe:</label>
+                  <FormSelect onChange={(e: any) => setDivider(e.target.value)}
+                    id="divider"
+                    value={divider}>
+                      <option value={1}>Original</option>
+                      <option value={2}>1/2</option>
+                      <option value={4}>1/4</option>
+                      <option value={3}>1/3</option>
+                  </FormSelect>
+                </Row>
               </Col>
             </Row>
             <Row>
-              <Col>Ingredients</Col>
-              <Col>Directions</Col>
+              <Col><h4>Ingredients</h4></Col>
             </Row>
             <Row>
               <Col>
-                <table>
-                  <tbody>
-                    {
-                      recipe.ingredients.map((i: any, index: number) => {
-                        return (
-                          <tr key={index}>
-                            <td>{i.quantity} {i.unit} {i.name}</td>
-                          </tr>
-                        )
-                      })
-                    }
-                  </tbody>
-                </table>
+                <ul className="column-2">
+                  {
+                    recipe.ingredients.map((i: any, index: number) => {
+                      return (
+                        <li key={index}>{ convertUnit(i.quantity, i.unit)} {i.name}</li>
+                      )
+                    })
+                  }
+                </ul>
               </Col>
+            </Row>
+            <Row>
+              <Col><h4>Directions</h4></Col>
+            </Row>
+            <Row>
               <Col>
-                <table>
-                  <tbody>
+                  <ol>
                     {
                       recipe.directions.map((i: any, index: number) => {
                         return (
-                          <tr key={index}>
-                            <td>{++index} {i}</td>
-                          </tr>
+                          <li key={index}>{i}</li>
                         )
                       })
                     }
-                  </tbody>
-                </table>
+                  </ol>
+                </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h4>Notes:</h4>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {recipe.notes}
               </Col>
             </Row>
         </Container>

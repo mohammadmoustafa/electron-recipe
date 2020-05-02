@@ -29,11 +29,11 @@ const recipeSchema = {
           }
         },
         prepTime: {
-          type: 'integer',
+          type: 'number',
           minimum: 0
         },
         cookTime: {
-          type: 'integer',
+          type: 'number',
           minimum: 0
         },
         ingredients: {
