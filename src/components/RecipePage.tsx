@@ -1,4 +1,6 @@
 import React from 'react';
+import '../style/master.css';
+import breakfast from '../media/breakfast.jpeg';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -27,7 +29,7 @@ export default function RecipePage() {
             <Row>
               <Col>
                 <img style={{ maxWidth: '100%', objectFit: 'cover'}}
-                    src={recipe.img} alt=''/>
+                    src={(recipe.img) ? recipe.img : breakfast} alt=''/>
               </Col>
               <Col>
                 <Row>{recipe.title}</Row>
