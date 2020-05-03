@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../style/master.css';
-import '../style/RecipePage.css';
-import * as conversions from './UnitConversions.json';
-import breakfast from '../media/breakfast.jpeg';
+import 'src/style/master.css';
+import 'src/style/RecipePage.css';
+import * as conversions from 'src/components/UnitConversions.json';
+import breakfast from 'src/media/breakfast.jpeg';
 import { useParams } from 'react-router-dom';
 
 import {
@@ -49,7 +49,18 @@ export default function RecipePage() {
     const convertTime = (mins: number) => {
       let hr = Math.floor(mins / 60);
       let min = mins % 60;
-      return `${hr} ` + ((hr > 1)?  `hours` : 'hour') + ((min > 0) ? ` ${min} mins` : '');
+      let result : string = '';
+      if (hr > 1) {
+        result = result.concat(`${hr} hours `);
+      } else if (hr > 0) {
+        result = result.concat(`${hr} hour `);
+      }
+
+      if (min > 0) {
+        result = result.concat(`${min} mins`);
+      }
+
+      return result;
     }
 
     return (

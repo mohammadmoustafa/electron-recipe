@@ -1,5 +1,5 @@
 import React from 'react';
-import '../style/master.css';
+import 'src/style/master.css';
 
 import {
   Form,
