@@ -55,10 +55,6 @@ function App() {
                   <ListGroup flush>
                     <ListGroupItem><Link to="/recipes">Recipes</Link></ListGroupItem>
                     <ListGroupItem><Link to="/recipes/add-recipe">Add Recipe</Link></ListGroupItem>
-                    <ListGroupItem>Item 3</ListGroupItem>
-                    <ListGroupItem>Item 4</ListGroupItem>
-                    <ListGroupItem>Item 5</ListGroupItem>
-                    <ListGroupItem>Item 6</ListGroupItem>
                   </ListGroup>
                 </Route>
               </Switch>
