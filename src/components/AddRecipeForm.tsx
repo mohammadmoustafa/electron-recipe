@@ -21,6 +21,8 @@ const generator = new FlakeIdGen();
 
 const remote = window.require('electron').remote;
 
+// Need to work on this to accept proper recipes
+
 class AddRecipeForm extends React.Component<any,any> {
   store: any;
   constructor(props: any) {
