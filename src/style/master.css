@@ -1,0 +1,19 @@
+#body {
+  height: 100%;
+}
+
+#crumbs * {
+  margin-bottom: auto;
+}
+
+#crumbs-root {
+  width: 100%;
+}
+
+div[class^="col-"] {
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

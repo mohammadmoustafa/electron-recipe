@@ -1,0 +1,44 @@
+.recipe-img {
+  object-fit: cover;
+  border-radius: 5px 0 0 5px;
+  max-height: 200px;
+  max-width: 350px;
+  height: 100%;
+  width: 100%;
+}
+div[class^='col'] .recipe-info{
+  padding: 10px 15px 0 30px;
+}
+
+.recipe-badge {
+  margin-right: 5px;
+}
+
+.recipes-group.list-group {
+  width: 100%;
+  margin-right: 10px;
+}
+
+.recipe-body.list-group-item {
+  width: 100%;
+  padding: 0;
+  border-top: 1px solid rgba(0,0,0,.125) !important;
+  border-radius: 5px;
+  margin-bottom: 3px;
+  margin-top: 3px;
+}
+
+.card-body {
+  padding: 1.25rem !important;
+}
+
+.share-controls {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 0;
+}
+
+div[class^='share-controls col'] {
+  padding: 0;
+}
