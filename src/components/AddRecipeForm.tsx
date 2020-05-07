@@ -1,5 +1,6 @@
 import React from 'react';
 import '../style/master.css';
+import '../style/RecipeForm.css';
 
 import {
   Form,
@@ -12,29 +13,26 @@ import {
   InputGroup,
   InputGroupText,
   InputGroupAddon,
+  Row,
+  Col,
+  Container
 } from "shards-react";
-
 import { Redirect } from 'react-router-dom';
 import FlakeIdGen from 'flake-idgen';
 import intformat from 'biguint-format';
 const generator = new FlakeIdGen();
 
-const remote = window.require('electron').remote;
-
 // Need to work on this to accept proper recipes
 
 class AddRecipeForm extends React.Component<any,any> {
   store: any;
+  myref: any;
   constructor(props: any) {
     super(props)
     this.state = {
       title: '',
       img: '',
-      categories: {
-        breakfast: false,
-        lunch: false,
-        dinner: false,
-      },
+      category: '',
       prep: -1,
       prepUnit: 'hr',
       cook: -1,
@@ -46,7 +44,7 @@ class AddRecipeForm extends React.Component<any,any> {
       open: false,
       ingredientForm: {
         name: '',
-        quantity: 0,
+        quantity: '',
         unit: 'cup'
       },
       directionsForm: ''
@@ -85,7 +83,14 @@ class AddRecipeForm extends React.Component<any,any> {
       quantity: parseInt(this.state.ingredientForm.quantity),
       unit: this.state.ingredientForm.unit
     });
-    this.setState({ ingredients: ingredients});
+    this.setState({ 
+      ingredients: ingredients,
+      ingredientForm: {
+        name: '',
+        quantity: 0,
+        unit: 'cup'
+      }
+    });
   }
 
   addDirection(event: any) {
@@ -135,7 +140,9 @@ class AddRecipeForm extends React.Component<any,any> {
       notes: this.state.notes
     }
     this.store.addRecipe(recipe).then((res: any) => {
-      alert("Recipe has been added");
+      let notif = new Notification('Electron Recipe', {
+        body: `New Recipe '${recipe.title}' has been added.`
+      });
       this.setState({ redirect: true });
     }).catch((err: any) => console.log(err));;
     event.preventDefault();
@@ -143,97 +150,94 @@ class AddRecipeForm extends React.Component<any,any> {
 
   render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <InputGroup>
-          <InputGroupAddon type="prepend">
-            <InputGroupText>Recipe Name</InputGroupText>
-          </InputGroupAddon>
-          <FormInput onChange={(e:any) => this.handleChange(e, 'title')}/>
-        </InputGroup>
-        <InputGroup>
-          <InputGroupAddon type="prepend">
-            <InputGroupText>https://</InputGroupText>
-          </InputGroupAddon>
-          <FormInput placeholder="Image URL"
-            onChange={(e:any) => this.handleChange(e, 'img')}/>
-        </InputGroup>
+      <Form className="recipe-form" onSubmit={this.handleSubmit}>
 
-        <FormGroup>
-          <FormCheckbox inline
-          checked={this.state.categories.breakfast}
-          onChange={(e:any) => this.handleCheckChange(e, "breakfast")}>
-          Breakfast</FormCheckbox>
-          <FormCheckbox inline
-          checked={this.state.categories.lunch}
-          onChange={(e:any) => this.handleCheckChange(e, "lunch")}>
-          Lunch</FormCheckbox>
-          <FormCheckbox inline
-          checked={this.state.categories.dinner}
-          onChange={(e:any) => this.handleCheckChange(e, "dinner")}>
-          Dinner</FormCheckbox>
-        </FormGroup>
+        <Row id="form-item" lg="12">
+          <InputGroup>
+            <InputGroupAddon type="prepend">
+              <InputGroupText>Recipe Name</InputGroupText>
+            </InputGroupAddon>
+            <FormInput required onChange={(e:any) => this.handleChange(e, 'title')}/>
+          </InputGroup>
+        </Row>
 
+        <Row id="form-item">
+          <Col md="6" lg="6" style={{ display: 'flex', paddingRight: '7.5px'}}>
+            <InputGroup style={{ flex: '1'}}>
+              <InputGroupAddon type="prepend">
+                <InputGroupText>Image</InputGroupText>
+              </InputGroupAddon>
+              <FormInput type="file" />
+            </InputGroup>
+          </Col>
+          <Col md="6" lg="6" style={{ display: 'flex', paddingLeft: '7.5px'}}>
+            <InputGroup style={{ flex: '1'}}>
+              <InputGroupAddon type="prepend">
+                <InputGroupText>Category</InputGroupText>
+              </InputGroupAddon>
+              <FormSelect style={{ height: '100%'}}
+                onChange={(e: any) => this.handleChange(e, 'category')}>
+                <option value="appetizer">Appetizer</option>
+                <option value="entree">Entree</option>
+                <option value="dessert">Dessert</option>
+              </FormSelect>
+            </InputGroup>
+          </Col>
+        </Row>
+
+        <Row id="form-item">
+          <Col md="6" lg="6" style={{ display: 'flex', paddingRight: '7.5px'}}>
+            <InputGroup style={{ flex: '1'}}>
+              <InputGroupAddon type="prepend">
+                <InputGroupText>Prep Time</InputGroupText>
+              </InputGroupAddon>
+              <FormInput type="number" step="0.25"
+                onChange={(e:any) => this.handleChange(e, 'prep')}/>
+              <FormSelect onChange={(e: any) => { this.setState({ prepUnit: e.target.value}) }} >
+                <option>Hour(s)</option>
+                <option>Minute(s)</option>
+              </FormSelect>
+            </InputGroup>
+          </Col>
+          <Col md="6" lg="6" style={{ display: 'flex', paddingLeft: '7.5px'}}>
+            <InputGroup style={{ flex: '1'}}>
+              <InputGroupAddon type="prepend">
+                <InputGroupText>Prep Time</InputGroupText>
+              </InputGroupAddon>
+              <FormInput type="number" step="0.25"
+                onChange={(e:any) => this.handleChange(e, 'prep')}/>
+              <FormSelect onChange={(e: any) => { this.setState({ prepUnit: e.target.value}) }} >
+                <option>Hour(s)</option>
+                <option>Minute(s)</option>
+              </FormSelect>
+            </InputGroup>
+          </Col>
+        </Row>
+          
+        {/* Ingredients section */}
         <InputGroup>
-          <InputGroupAddon type="prepend">
-            <InputGroupText>Prep Time</InputGroupText>
-          </InputGroupAddon>
-          <FormInput type="number" step="0.25"
-            onChange={(e:any) => this.handleChange(e, 'prep')}/>
-          <FormSelect onChange={(e: any) => { this.setState({ prepUnit: e.target.value}) }} >
-            <option>Hour(s)</option>
-            <option>Minute(s)</option>
+          <FormInput ref={this.myref} value={this.state.ingredientForm.name}
+            onChange={(e: any) => this.handleIngredientChange(e, 'name')} />
+          <FormInput type="number" value={this.state.ingredientForm.quantity}
+            onChange={(e: any) => this.handleIngredientChange(e, 'quantity')} />
+          <FormSelect value={this.state.ingredientForm.unit}
+            onChange={(e: any) => this.handleIngredientChange(e, 'unit')}>
+            <option value="cup">Cup</option>
+            <option value="bunch">Bunch</option>
           </FormSelect>
+          <Button onClick={this.addRow}>Add Ingredient</Button>
         </InputGroup>
-
-        <InputGroup>
-          <InputGroupAddon type="prepend">
-            <InputGroupText>Cook Time</InputGroupText>
-          </InputGroupAddon>
-          <FormInput type="number" step="0.25"
-            onChange={(e:any) => this.handleChange(e, 'cook')}/>
-          <FormSelect onChange={(e: any) => { this.setState({ cookUnit: e.target.value}) }} >
-            <option value="hr">Hour(s)</option>
-            <option value="min">Minute(s)</option>
-          </FormSelect>
-        </InputGroup>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Ingredient</th>
-              <th>Quantity</th>
-              <th>Unit</th>  
-            </tr>
-            <tr>
-              <th><FormInput onChange={(e: any) => this.handleIngredientChange(e, 'name')} /></th>
-              <th><FormInput type="number" onChange={(e: any) => this.handleIngredientChange(e, 'quantity')} /></th>
-              <th>
-                <FormSelect value={this.state.ingredientForm.unit}
-                  onChange={(e: any) => this.handleIngredientChange(e, 'unit')}>
-                  <option value="cup">Cup</option>
-                  <option value="bunch">Bunch</option>
-                </FormSelect>
-              </th>
-              <th><Button onClick={this.addRow}>Add Ingredient</Button></th>
-            </tr>
-          </thead>
-        </table>
-        <table>
-          <tbody>
-            { 
-              this.state.ingredients.map((r: any) => {
-                return (
-                  <tr key={r.name}>
-                    <td>{r.name}</td>
-                    <td>{r.quantity}</td>
-                    <td>{r.unit}</td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </table>
+        <ul className="column-3">
+          {
+            this.state.ingredients.map((r: any) => {
+              return (
+              <li key={r.name}>{r.quantity} {r.unit} {r.name}</li>
+              )
+            })
+          }
+        </ul>
         
+        {/* Directions section */}
         <table>
           <thead>
             <tr>

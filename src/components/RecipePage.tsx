@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import '..//style/master.css';
-import '..//style/RecipePage.css';
+import '../style/master.css';
+import '../style/RecipePage.css';
 import * as conversions from '../store/UnitConversions.json';
 import breakfast from '../assets/breakfast.jpeg';
 import { useParams } from 'react-router-dom';
@@ -101,7 +101,7 @@ export default function RecipePage(props: any) {
           </Row>
           <Row>
             <Col>
-              <ul className="column-2">
+              <ul className="column-3">
                 {
                   recipe.ingredients.map((i: any, index: number) => {
                     return (
