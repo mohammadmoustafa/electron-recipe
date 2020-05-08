@@ -13,7 +13,6 @@ import {
     FormSelect,
 } from "shards-react";
 
-const remote = window.require('electron').remote;
 type catOptions = {
     [key: string]: JSX.Element
   }
@@ -28,8 +27,10 @@ export default function RecipePage(props: any) {
     const store = props.db;
     const [recipe, setRecipe] = useState({
       title: '',
-      img: '',
-      categories: [],
+      _attachments: {
+        img: ''
+      },
+      category: '',
       prepTime: '',
       cookTime: '',
       ingredients: [],
@@ -74,14 +75,15 @@ export default function RecipePage(props: any) {
           <Row>
             <Col>
               <img style={{ maxWidth: '100%', objectFit: 'cover'}}
-                  src={(recipe.img) ? recipe.img : breakfast} alt=''/>
+                  src={(recipe._attachments.img) ? URL.createObjectURL(recipe._attachments.img.data) : breakfast} alt=''/>
             </Col>
             <Col>
               <Row><h3>{recipe.title}</h3></Row>
-              <Row>Prep Time: {recipe.prepTime} Cook Time: {recipe.cookTime}</Row>
-              <Row>{ recipe.categories.map((c: string) => {
-                  return categories[c];
-                }) }
+              <Row> 
+                {recipe.prepTime && `Prep Time: ${recipe.prepTime}`} &nbsp;
+                {recipe.cookTime && `Cook Time: ${recipe.cookTime}`}
+              </Row>
+              <Row>{ categories[recipe.category] }
               </Row>
               <Row>
                 <label htmlFor="divider">Divide Recipe:</label>
