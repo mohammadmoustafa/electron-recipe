@@ -17,3 +17,19 @@ div[class^="col-"] {
 ::-webkit-scrollbar {
   display: none;
 }
+
+ul.column-3 {
+  columns: 3;
+  padding-left: 0;
+  list-style-type: none; 
+}
+
+ul.column-2 {
+  columns: 3;
+  padding-left: 0;
+  list-style-type: none; 
+}
+
+.sub-title {
+  font-size: min(max(16px, 4vw), 22px);
+}

@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader';
 import React from 'react';
 import Recipes from './Recipes';
 import AddRecipeForm from './AddRecipeForm';
@@ -26,9 +27,6 @@ function App(props: any) {
         <Row id="crumbs">
           <Breadcrumb id="crumbs-root">
             <Switch>
-              <Route exact path="/">
-                <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
-              </Route>
               <Route exact path="/recipes">
                 <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
                 <BreadcrumbItem active>Recipes</BreadcrumbItem>
@@ -42,6 +40,9 @@ function App(props: any) {
                 <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
                 <BreadcrumbItem>Recipes</BreadcrumbItem>
                 <BreadcrumbItem active>View Recipe</BreadcrumbItem>
+              </Route>
+              <Route>
+                <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
               </Route>
             </Switch>
           </Breadcrumb>
@@ -65,8 +66,8 @@ function App(props: any) {
                 <Switch>
                   <Route exact path="/recipes"><Recipes db={props.db} /></Route>
                   <Route exact path="/recipes/add-recipe"><AddRecipeForm db={props.db} /></Route>
-                  <Route exact path="/">Content</Route>
                   <Route path="/recipes/:id" children={<RecipePage db={props.db} />}></Route>
+                  <Route>Content</Route>
                 </Switch>
               </Row>
             </Container>
@@ -76,4 +77,4 @@ function App(props: any) {
   );
 }
 
-export default App;
+export default hot(module)(App);

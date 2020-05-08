@@ -54,9 +54,11 @@ const colors = () => {
 
 function Recipe(props: any) {
   const history = useHistory();
+  const recipe = props.entry.doc;
+  const image = recipe._attachments.img;
 
   const handleClick = () => {
-    history.push(`/recipes/${props.id}`);
+    history.push(`/recipes/${props.entry.id}`);
   }
 
   return (
@@ -65,17 +67,15 @@ function Recipe(props: any) {
         <Row>
           <Col md="4">
             <img className="recipe-img" alt=''
-              src={(props.img) ? props.img as string : "https://place-hold.it/250x300"} />
+              src={(image) ? URL.createObjectURL(image.data) : "https://place-hold.it/250x300"} />
           </Col>
           <Col md="7" className="recipe-info">
-            <Row><h4>{props.title}</h4></Row>
-            <Row>Prep Time: {props.prepTime}</Row>
-            <Row>Cooking Time: {props.cookTime}</Row>
+            <Row><h4>{recipe.title}</h4></Row>
+            <Row>Prep Time: {recipe.prepTime}</Row>
+            <Row>Cooking Time: {recipe.cookTime}</Row>
             <Row style={{ flexGrow: '1' }}>&nbsp; </Row>
             <Row>
-              { props.category.map((c: string) => {
-                return categories[c];
-              }) }
+              { categories[recipe.category] }
             </Row>
           </Col>
           <Col md="1" className="share-controls">
@@ -106,13 +106,7 @@ class Recipes extends React.Component<any, any> {
     var recipes: Array<any> = [];
     this.store.getRecipes().then((res: any) => {
       res.rows.forEach((r: any) => {
-        recipes.push(<Recipe title={r.doc.title}
-            category={r.doc.categories}
-            prepTime={r.doc.prepTime}
-            cookTime={r.doc.cookTime}
-            img={(r.doc.img) ? r.doc.img : breakfast}
-            key={r.id}
-            id={r.id}/>);
+        recipes.push(<Recipe entry={r} key={r.doc._id}/>);
       });
       this.setState({recipes: recipes});
     });

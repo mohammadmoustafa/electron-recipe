@@ -7,6 +7,10 @@ class RecipeStore {
       this.db = new PouchDB('recipes');
     }
 
+    getDB() {
+      return this.db
+    }
+
     addRecipe(recipe: any) {
       return this.db.put(recipe);
     }
@@ -21,11 +25,11 @@ class RecipeStore {
     }
 
     getRecipe(id: string) {
-      return this.db.get(id);
+      return this.db.get(id, { include_docs: true, attachments: true, binary: true });
     }
 
     getRecipes() {
-      return this.db.allDocs({ include_docs: true });
+      return this.db.allDocs({ include_docs: true, attachments: true, binary: true });
     }
     
     deleteRecipe(id: string) {
