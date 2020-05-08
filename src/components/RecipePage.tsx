@@ -105,7 +105,7 @@ export default function RecipePage(props: any) {
               <Row className="w-100" style={{ marginTop: "5px"}}>
                 <InputGroup>
                   <InputGroupAddon type="prepend">
-                    <InputGroupText style={{ color: 'black'}}>Divide Recipe</InputGroupText>
+                    <InputGroupText >Divide Recipe</InputGroupText>
                   </InputGroupAddon>
                   <FormSelect onChange={(e: any) => setDivider(e.target.value)}
                   id="divider"
@@ -120,11 +120,11 @@ export default function RecipePage(props: any) {
               </Row>
             </Col>
           </Row>
-          <Row className="body-headings">
+          <Row className="body-headings pl-15">
             <Col md="4"><h4>Ingredients</h4></Col>
             <Col md="8"><h4>Directions</h4></Col>
           </Row>
-          <Row>
+          <Row className="pl-15">
             {/* ingredients */}
             <Col md="4">
               <ul >
@@ -152,12 +152,12 @@ export default function RecipePage(props: any) {
           </Row>
           { recipe.notes &&
             <React.Fragment>
-              <Row>
+              <Row className="pl-15">
                 <Col>
                   <h4>Notes:</h4>
                 </Col>
               </Row>
-              <Row>
+              <Row className="pl-15">
                 <Col>
                   {recipe.notes}
                 </Col>
@@ -165,7 +165,7 @@ export default function RecipePage(props: any) {
             </React.Fragment>
           }
           { recipe.tags &&
-          <Row id="tags">
+          <Row id="tags" style={{ paddingLeft: '30px' }}>
             { recipe.tags.map((tag: any, i: number) => {
               return (<Badge pill theme="light" key={i}>#{tag.value}</Badge>)
             }) }

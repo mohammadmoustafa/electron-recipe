@@ -4,10 +4,16 @@
 
 #body {
   height: calc(100vh - 48px);
+  z-index: 998;
+  position: relative;
+  color: rgb(191,191,191) !important;
 }
 
 #content {
+  position: relative;
+  z-index: -1;
   height: 100%;
+  background-color: rgb(31, 31, 31);
 }
 
 #content > .container-fluid {
@@ -16,13 +22,22 @@
   padding-bottom: 15px;
 }
 
-#content, #navigation {
-  border: 1px solid black;
+#navigation, #navigation * {
+  background: rgb(40, 40, 40);
+  color: rgb(226, 226, 226) !important;
+}
+
+#crumbs {
+  position: relative;
+  z-index: 999;
+  box-shadow: 0px 2px 5px rgba(36,36,36,1);
 }
 
 #crumbs * {
   margin-bottom: auto;
   border-radius: 0;
+  background: rgb(40, 40, 40);
+  color: rgb(226, 226, 226) !important;
 }
 
 #crumbs-root {
@@ -52,8 +67,35 @@ ul.column-2 {
 .title {
   font-size: min(max(18px, 4vw), 24px);
   font-weight: 600;
+  color: rgb(226, 226, 226);
+}
+h1,h2,h3,h4,h5,h6 {
+  color: rgb(226, 226, 226) !important;
 }
 
 .sub-title {
   font-size: min(max(16px, 4vw), 22px);
+  color: rgb(226, 226, 226);
+}
+
+div[class^="input-group-"] {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;;
+}
+
+div[class^="input-group"] *, #tags div[class$="control"], textarea.form-control {
+  background-color: rgb(23, 23, 23);
+  border-color: rgb(47,47,47);
+  color: rgb(191,191,191);
+}
+
+.form-control:focus {
+  background-color: rgb(23, 23, 23) !important;
+  border-color: rgb(47,47,47);
+  color: rgb(191,191,191) !important;
+  box-shadow: 0 0.313rem 0.719rem rgba(0,123,255,.1), 0 0.156rem 0.125rem rgba(0,0,0,.06)
+}
+
+.pl-15 {
+  padding-left: 15px;
 }

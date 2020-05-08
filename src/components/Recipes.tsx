@@ -70,8 +70,8 @@ function Recipe(props: any) {
               src={(image) ? URL.createObjectURL(image.data) : "https://place-hold.it/250x300"} />
           </Col>
           <Col md="7" className="recipe-info">
-            <Row><h4>{recipe.title}</h4></Row>
-            <Row>Prep Time: {recipe.prepTime}</Row>
+            <Row className="title">{recipe.title}</Row>
+            { recipe.prepTime != '' && <Row>Prep Time: {recipe.prepTime}</Row> }
             <Row>Cook Time: {recipe.cookTime}</Row>
             <Row style={{ flexGrow: '1' }}>&nbsp; </Row>
             <Row>
