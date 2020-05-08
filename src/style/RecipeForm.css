@@ -6,3 +6,12 @@
   width: 100%;
   padding: 0 15px 0 15px;
 }
+
+.recipe-form span[class="input-group-text"] {
+  color: black;
+}
+
+.form-group #tags {
+  margin-top: 0px;
+  padding-left: 0px;
+}

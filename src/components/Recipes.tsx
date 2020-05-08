@@ -18,9 +18,9 @@ type catOptions = {
   [key: string]: JSX.Element
 }
 var categories : catOptions = {
-  breakfast: <Badge className="recipe-badge" theme="primary" key="breakfast">Breakfast</Badge>,
-  lunch: <Badge className="recipe-badge" theme="success" key="lunch">Lunch</Badge>,
-  dinner: <Badge className="recipe-badge" theme="info" key="dinner">Dinner</Badge>
+  appetizer: <Badge className="recipe-badge" theme="primary" key="appetizer">Appetizer</Badge>,
+  entree: <Badge className="recipe-badge" theme="success" key="entree">Entree</Badge>,
+  dessert: <Badge className="recipe-badge" theme="info" key="dessert">Dessert</Badge>
 }
 
 const colors = () => {
@@ -58,7 +58,7 @@ function Recipe(props: any) {
   const image = recipe._attachments.img;
 
   const handleClick = () => {
-    history.push(`/recipes/${props.entry.id}`);
+    history.push(`/recipes/${recipe._id}`);
   }
 
   return (
@@ -72,7 +72,7 @@ function Recipe(props: any) {
           <Col md="7" className="recipe-info">
             <Row><h4>{recipe.title}</h4></Row>
             <Row>Prep Time: {recipe.prepTime}</Row>
-            <Row>Cooking Time: {recipe.cookTime}</Row>
+            <Row>Cook Time: {recipe.cookTime}</Row>
             <Row style={{ flexGrow: '1' }}>&nbsp; </Row>
             <Row>
               { categories[recipe.category] }

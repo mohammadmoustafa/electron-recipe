@@ -14,9 +14,10 @@ import {
   InputGroupText,
   InputGroupAddon,
   Row,
-  Col,
-  Container
+  Col
 } from "shards-react";
+import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { Redirect } from 'react-router-dom';
 import FlakeIdGen from 'flake-idgen';
 import intformat from 'biguint-format';
@@ -26,17 +27,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus } from '@fortawesome/free-solid-svg-icons'
 
 
-// Need to work on this to accept proper recipes
+const unitOptions = [
+  {value: "cup", label: "cup"},
+  {value: "tbsp" , label: "tablespoon"},
+  {value: "tsp" , label: "teaspoon"},
+  {value: "g" , label: "gram"},
+  {value: "kg" , label: "kilogram"},
+  {value: "lb" , label: "pound"},
+  {value: "quart" , label: "quart"},
+  {value: "litre" , label: "litre"},
+  {value: "ml" , label: "millilitre"},
+]
 
 class AddRecipeForm extends React.Component<any,any> {
   store: any;
-  myref: any;
   constructor(props: any) {
     super(props)
     this.state = {
       title: '',
       img: null,
-      category: '',
+      category: 'appetizer',
       prep: 0,
       prepUnit: 'hr',
       cook: 0,
@@ -51,7 +61,8 @@ class AddRecipeForm extends React.Component<any,any> {
         quantity: '',
         unit: 'cup'
       },
-      directionsForm: ''
+      directionsForm: '',
+      tags: []
     }
     this.store = props.db;
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -83,7 +94,7 @@ class AddRecipeForm extends React.Component<any,any> {
     var ingredients = this.state.ingredients;
     ingredients.push({
       name: this.state.ingredientForm.name,
-      quantity: parseInt(this.state.ingredientForm.quantity),
+      quantity: parseFloat(this.state.ingredientForm.quantity),
       unit: this.state.ingredientForm.unit
     });
     this.setState({ 
@@ -135,7 +146,8 @@ class AddRecipeForm extends React.Component<any,any> {
       cookTime: this.convertTime(parseFloat(this.state.cook) * ((this.state.cookUnit === 'hr') ? 60 : 1)),
       ingredients: this.state.ingredients,
       directions: this.state.directions,
-      notes: this.state.notes
+      notes: this.state.notes,
+      tags: this.state.tags,
     }
     this.store.addRecipe(recipe).then((res: any) => {
       let notif = new Notification('Electron Recipe', {
@@ -144,12 +156,13 @@ class AddRecipeForm extends React.Component<any,any> {
       this.setState({
         title: '',
         img: null,
-        category: '',
+        category: 'appetizer',
         prep: 0,
         cook: 0,
         ingredients: [],
         directions: [],
-        notes: ''
+        notes: '',
+        tags: []
       });
     }).catch((err: any) => console.log(err));
     event.preventDefault();
@@ -174,7 +187,7 @@ class AddRecipeForm extends React.Component<any,any> {
               <InputGroupAddon type="prepend">
                 <InputGroupText>Image</InputGroupText>
               </InputGroupAddon>
-              <FormInput type="file" onChange={(e:any) => this.setState({ img: e.target.files[0] }) }/>
+              <FormInput id="image-upload" type="file" onChange={(e:any) => this.setState({ img: e.target.files[0] }) }/>
             </InputGroup>
           </Col>
           <Col md="6" lg="6" style={{ display: 'flex', paddingLeft: '7.5px'}}>
@@ -183,7 +196,7 @@ class AddRecipeForm extends React.Component<any,any> {
                 <InputGroupText>Category</InputGroupText>
               </InputGroupAddon>
               <FormSelect style={{ height: '100%'}} value={this.state.category}
-                onChange={(e: any) => this.handleChange(e, 'category')}>
+                onChange={(e: any) => this.setState({category: e.target.value}) }>
                 <option value="appetizer">Appetizer</option>
                 <option value="entree">Entree</option>
                 <option value="dessert">Dessert</option>
@@ -225,23 +238,18 @@ class AddRecipeForm extends React.Component<any,any> {
         <label htmlFor="#ingredients" className="sub-title">Ingredients</label>
         <InputGroup id="ingredients">
           <FormInput placeholder="Ingredient"
-            ref={this.myref} value={this.state.ingredientForm.name}
+            value={this.state.ingredientForm.name}
             onChange={(e: any) => this.handleIngredientChange(e, 'name')} />
           <FormInput placeholder="Amount" step="0.25"
             type="number" value={this.state.ingredientForm.quantity}
             onChange={(e: any) => this.handleIngredientChange(e, 'quantity')} />
           <FormSelect value={this.state.ingredientForm.unit}
             onChange={(e: any) => this.handleIngredientChange(e, 'unit')}>
-            <option value="cup">cup(s)</option>
-            <option value="tbsp">tbsp</option>
-            <option value="tsp">tsp</option>
-            <option value="g">gram(s)</option>
-            <option value="kg">kg(s)</option>
-            <option value="lb">lb(s)</option>
-            <option value="quart">quart(s)</option>
-            <option value="litre">litre(s)</option>
-            <option value="ml">ml</option>
-
+              { unitOptions.map((i: any, j: number) => {
+                return (
+                <option value={i.value} key={j}>{i.label}</option>
+                )
+              })}
           </FormSelect>
           <InputGroupAddon type="append">
           <Button onClick={this.addIngredient}>Add Ingredient</Button>
@@ -265,7 +273,8 @@ class AddRecipeForm extends React.Component<any,any> {
         {/* Directions section */}
         <label htmlFor="#directions" className="sub-title">Directions</label>
         <InputGroup>
-          <FormInput placeholder="Direction..." onChange={this.handleDirectionsChange} />
+          <FormInput placeholder="Direction..." value={this.state.directionsForm}
+            onChange={this.handleDirectionsChange} />
           <InputGroupAddon type="append">
             <Button onClick={this.addDirection}>Add Direction</Button>
           </InputGroupAddon>
@@ -286,9 +295,14 @@ class AddRecipeForm extends React.Component<any,any> {
         </ol>
 
         <FormGroup>
-          <label htmlFor="#notes">Notes</label>
+          <label htmlFor="#notes" className="sub-title">Notes</label>
           <FormTextarea id="#notes" value={this.state.notes}
             onChange={(e: any) => this.handleChange(e, 'notes')} />
+        </FormGroup>
+        <FormGroup>
+          <label htmlFor="#tags" className="sub-title">Tags</label>
+          <CreatableSelect id="tags" isMulti 
+            onChange={(val: any, action: any) => this.setState({tags: val}) }/>
         </FormGroup>
         <Button type="submit">Submit</Button>
         { this.state.redirect && <Redirect to="/recipes" /> }

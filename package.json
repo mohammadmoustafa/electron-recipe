@@ -20,6 +20,18 @@
   "config": {
     "forge": {
       "packagerConfig": {},
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "mohammadmoustafa",
+              "name": "electron-recipe"
+            },
+            "prerelease": true
+          }
+        }
+      ],
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -73,6 +85,7 @@
     "@electron-forge/maker-squirrel": "6.0.0-beta.51",
     "@electron-forge/maker-zip": "6.0.0-beta.51",
     "@electron-forge/plugin-webpack": "6.0.0-beta.51",
+    "@electron-forge/publisher-github": "^6.0.0-beta.51",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.1.0",
@@ -99,6 +112,7 @@
     "@types/pouchdb": "^6.4.0",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
+    "@types/react-select": "^3.0.12",
     "biguint-format": "^1.0.2",
     "electron-squirrel-startup": "^1.0.0",
     "eslint": "^6.8.0",
@@ -112,6 +126,7 @@
     "react-dom": "^16.13.1",
     "react-file-picker-preview": "^0.0.9",
     "react-router-dom": "^5.1.2",
+    "react-select": "^3.1.0",
     "shards-react": "^1.0.3",
     "webpack": "^4.43.0"
   },
@@ -124,15 +139,5 @@
     "plugins": [
       "react-hot-loader/babel"
     ]
-  },
-  "forge": {
-    "publish_targets": {
-      "win32": [
-        "github"
-      ],
-      "darwin": [
-        "github"
-      ]
-    }
   }
 }

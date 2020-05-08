@@ -6,21 +6,24 @@ import breakfast from '../assets/breakfast.jpeg';
 import { useParams } from 'react-router-dom';
 
 import {
-    Container,
     Row,
     Col,
     Badge,
     FormSelect,
+    InputGroup,
+    InputGroupAddon,
+    InputGroupText,
 } from "shards-react";
 
 type catOptions = {
     [key: string]: JSX.Element
   }
 var categories : catOptions = {
-    breakfast: <Badge className="recipe-badge" theme="primary" key="breakfast">Breakfast</Badge>,
-    lunch: <Badge className="recipe-badge" theme="success" key="lunch">Lunch</Badge>,
-    dinner: <Badge className="recipe-badge" theme="info" key="dinner">Dinner</Badge>
+    appetizer: <Badge pill className="recipe-badge" theme="primary" key="appetizer">Appetizer</Badge>,
+    entree: <Badge pill className="recipe-badge" theme="success" key="entree">Entree</Badge>,
+    dessert: <Badge pill className="recipe-badge" theme="info" key="dessert">Dessert</Badge>
 }
+
 
 export default function RecipePage(props: any) {
     const { id } = useParams();
@@ -36,23 +39,26 @@ export default function RecipePage(props: any) {
       ingredients: [],
       directions: [],
       notes: '',
+      tags: []
     } as any);
-    var _isMounted = true;
+    const [_mounted, _setMounted] = useState(true);
 
     useEffect(() => {
-      store.getRecipe(id).then((res: any) => {
-        if (_isMounted) setRecipe(res);
-      }).catch((err: any) => {
-        console.log("she fucked")
-      });
+      if (_mounted) {
+        store.getRecipe(id).then((res: any) => {
+          setRecipe(res);
+        }).catch((err: any) => {
+          console.log(err)
+        });
+      }
       return function cleanup() {
-        _isMounted = false;
+       _setMounted(false);
       }
     }, [recipe]);
     
     const [divider, setDivider] = useState(1);
 
-    const convertUnit = (num: number, unit: string) => {
+    const convertUnit = (num: number, unit: string, name: string) => {
       let divisor : number = divider;
       let clean = ((num / divisor) % 0.25) === 0;
       if (clean) return `${num/divisor} ${unit}`;
@@ -62,7 +68,16 @@ export default function RecipePage(props: any) {
             let mult = conversions.cup.multiplier;
             let tbsp = Math.floor(Math.pow(mult, 2) *num / divisor);
             let tsp = Math.ceil(((( Math.pow(mult, 2) * num) / divisor) % tbsp) * conversions.tbsp.multiplier);
-            return `${tbsp} tbsp + ${tsp} tsp`;
+            let result: string = '';
+            if (tbsp > 0) result = result.concat(`${tbsp} tbsp `);
+            if (tsp > 0) result = result.concat(`${tsp} tsp`);
+            return `${result} ${name}`;
+          case 'tsp':
+            let res = num/divisor;
+            if ([0.25, 0.5, 0.75].includes(res)) return `${res} tsp ${name}`;
+            return `pinch of ${name}`;
+          case 'g':
+            return `${Math.floor(num/divisor)} g ${name}`
           default:
             return 'cups';
         }
@@ -70,77 +85,92 @@ export default function RecipePage(props: any) {
     }
 
     return (
-      <Container fluid>
-        <React.Fragment>
+        <div id="container">
           <Row>
             <Col>
-              <img style={{ maxWidth: '100%', objectFit: 'cover'}}
-                  src={(recipe._attachments.img) ? URL.createObjectURL(recipe._attachments.img.data) : breakfast} alt=''/>
+              <img className="image"
+                  src={(recipe._attachments.img) ? 
+                    URL.createObjectURL(recipe._attachments.img.data) :
+                    "https://place-hold.it/250x300"} alt=''/>
             </Col>
-            <Col>
-              <Row><h3>{recipe.title}</h3></Row>
+            <Col className="w-100" style={{ paddingLeft: "15px", paddingTop: "15px" }}>
+              <Row className="title">{recipe.title}</Row>
               <Row> 
-                {recipe.prepTime && `Prep Time: ${recipe.prepTime}`} &nbsp;
-                {recipe.cookTime && `Cook Time: ${recipe.cookTime}`}
-              </Row>
-              <Row>{ categories[recipe.category] }
+                {recipe.prepTime && `Prep Time: ${recipe.prepTime}`}
               </Row>
               <Row>
-                <label htmlFor="divider">Divide Recipe:</label>
-                <FormSelect onChange={(e: any) => setDivider(e.target.value)}
+                {recipe.cookTime && `Cook Time: ${recipe.cookTime}`}
+              </Row>
+              <Row>{ categories[recipe.category] }</Row>
+              <Row className="w-100" style={{ marginTop: "5px"}}>
+                <InputGroup>
+                  <InputGroupAddon type="prepend">
+                    <InputGroupText style={{ color: 'black'}}>Divide Recipe</InputGroupText>
+                  </InputGroupAddon>
+                  <FormSelect onChange={(e: any) => setDivider(e.target.value)}
                   id="divider"
                   value={divider}>
                     <option value={1}>Original</option>
                     <option value={2}>1/2</option>
                     <option value={4}>1/4</option>
                     <option value={3}>1/3</option>
-                </FormSelect>
+                  </FormSelect>
+                </InputGroup>
+                
               </Row>
             </Col>
           </Row>
-          <Row>
-            <Col><h4>Ingredients</h4></Col>
+          <Row className="body-headings">
+            <Col md="4"><h4>Ingredients</h4></Col>
+            <Col md="8"><h4>Directions</h4></Col>
           </Row>
           <Row>
-            <Col>
-              <ul className="column-3">
+            {/* ingredients */}
+            <Col md="4">
+              <ul >
                 {
                   recipe.ingredients.map((i: any, index: number) => {
                     return (
-                      <li key={index}>{ convertUnit(i.quantity, i.unit)} {i.name}</li>
+                      <li key={index}>{ convertUnit(i.quantity, i.unit, i.name)}</li>
                     )
                   })
                 }
               </ul>
             </Col>
-          </Row>
-          <Row>
-            <Col><h4>Directions</h4></Col>
-          </Row>
-          <Row>
-            <Col>
-                <ol>
-                  {
-                    recipe.directions.map((i: any, index: number) => {
-                      return (
-                        <li key={index}>{i}</li>
-                      )
-                    })
-                  }
-                </ol>
-              </Col>
-          </Row>
-          <Row>
-            <Col>
-              <h4>Notes:</h4>
+            {/* directions */}
+            <Col md="8">
+              <ol>
+                {
+                  recipe.directions.map((i: any, index: number) => {
+                    return (
+                      <li key={index}>{i}</li>
+                    )
+                  })
+                }
+              </ol>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              {recipe.notes}
-            </Col>
+          { recipe.notes &&
+            <React.Fragment>
+              <Row>
+                <Col>
+                  <h4>Notes:</h4>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  {recipe.notes}
+                </Col>
+              </Row> 
+            </React.Fragment>
+          }
+          { recipe.tags &&
+          <Row id="tags">
+            { recipe.tags.map((tag: any, i: number) => {
+              return (<Badge pill theme="light" key={i}>#{tag.value}</Badge>)
+            }) }
           </Row>
-        </React.Fragment>
-      </Container>
+          }
+        </div>
     );
 }
