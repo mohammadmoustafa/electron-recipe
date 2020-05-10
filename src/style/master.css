@@ -83,7 +83,7 @@ div[class^="input-group-"] {
   border-bottom-left-radius: 6px;;
 }
 
-div[class^="input-group"] *, #tags div[class$="control"], textarea.form-control {
+div[class^="input-group"] *, #tags div[class^=" css"], textarea.form-control {
   background-color: rgb(23, 23, 23);
   border-color: rgb(47,47,47);
   color: rgb(191,191,191);
@@ -98,4 +98,8 @@ div[class^="input-group"] *, #tags div[class$="control"], textarea.form-control 
 
 .pl-15 {
   padding-left: 15px;
+}
+
+.pr-15 {
+  padding-right: 15px;
 }
