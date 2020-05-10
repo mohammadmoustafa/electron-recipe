@@ -4,11 +4,13 @@
 
 .recipe-form {
   width: 100%;
-  padding: 0 15px 0 15px;
+  padding: 15px 15px 0 15px;
 }
 
-.recipe-form span[class="input-group-text"] {
-  color: black;
+
+
+#tags div[class$="control"] {
+  border-radius: 6px;
 }
 
 .form-group #tags {

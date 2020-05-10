@@ -14,7 +14,8 @@ import {
   InputGroupText,
   InputGroupAddon,
   Row,
-  Col
+  Col,
+  Tooltip
 } from "shards-react";
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
@@ -24,7 +25,7 @@ import intformat from 'biguint-format';
 const generator = new FlakeIdGen();
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faMinus, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 
 const unitOptions = [
@@ -62,7 +63,8 @@ class AddRecipeForm extends React.Component<any,any> {
         unit: 'cup'
       },
       directionsForm: '',
-      tags: []
+      tags: [],
+      tooltip: false
     }
     this.store = props.db;
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -71,7 +73,8 @@ class AddRecipeForm extends React.Component<any,any> {
     this.addIngredient = this.addIngredient.bind(this);
     this.addDirection = this.addDirection.bind(this);
     this.handleIngredientChange = this.handleIngredientChange.bind(this);
-    this.convertTime = this.convertTime.bind(this)
+    this.convertTime = this.convertTime.bind(this);
+    this.tooltip = this.tooltip.bind(this);
   }
 
   convertTime(mins: number) {
@@ -128,6 +131,10 @@ class AddRecipeForm extends React.Component<any,any> {
     newState['ingredientForm'] = this.state.ingredientForm;
     newState.ingredientForm[field] = event.target.value;
     this.setState({...this.state, ...newState});
+  }
+  
+  tooltip() {
+    this.setState({ tooltip: !this.state.tooltip});
   }
 
   handleSubmit(event: any) { 
@@ -295,7 +302,14 @@ class AddRecipeForm extends React.Component<any,any> {
         </ol>
 
         <FormGroup>
-          <label htmlFor="#notes" className="sub-title">Notes</label>
+          <label htmlFor="#notes" id="notes-label" className="sub-title">Notes</label>
+          <FontAwesomeIcon id="info" icon={faInfoCircle} color="white" style={{ marginLeft: "10px"}}/>
+          <Tooltip open={this.state.tooltip}
+            target="#info"
+            placement="right"
+            toggle={this.tooltip}>
+              Supports Markdown
+          </Tooltip>
           <FormTextarea id="#notes" value={this.state.notes}
             onChange={(e: any) => this.handleChange(e, 'notes')} />
         </FormGroup>
